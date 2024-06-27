@@ -1,10 +1,7 @@
-import random
-
 from modules.page import Page
-from typing import Literal, TypeAlias
+from download import Status
 import aiohttp
 import asyncio
-Status: TypeAlias = Literal["IDLE", "DOWNLOADING", "FAILED", "FINISHED"]
 
 
 class PageDownload(Page):
@@ -47,16 +44,26 @@ class PageDownload(Page):
                             if not chunk:
                                 break
                             file.write(chunk)
-            await asyncio.sleep(10)
-            if random.choice([True, False]):
-                self.switch_state_checked("FINISHED")
-            else:
-                self.switch_state_checked("FAILED")
+            self.switch_state_checked("FINISHED")
             return True
         except Exception:
             self.switch_state_checked("FAILED")
             return False
 
+    async def get_progress(self) -> int:
+        if self.status == "FINISHED":
+            return 100
+        else:
+            return 0
+
+    async def get_status(self) -> Status:
+        return self.status
+
+    def set_path(self, path: str) -> None:
+        self.path = path
+
+    def get_path(self) -> str:
+        return self.path
 
 if __name__ == "__main__":
     async def test():
