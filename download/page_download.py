@@ -1,3 +1,6 @@
+import os.path
+import shutil
+
 from modules.page import Page
 from download import Status
 import aiohttp
@@ -9,6 +12,8 @@ class PageDownload(Page):
         super().__init__()
         self.status: Status = "IDLE"
         self.path: str = ""
+        self.failed_times: int = 0
+        self.max_failed_times: int = 20
 
     @staticmethod
     def from_page(page: Page, path: str, index: int) -> "PageDownload":
@@ -34,8 +39,11 @@ class PageDownload(Page):
 
     async def download(self) -> bool:
         self.switch_state_checked("DOWNLOADING")
+        if self.failed_times >= self.max_failed_times:
+            self.switch_state_checked("FAILED")
+            return False
         try:
-            async with aiohttp.ClientSession() as session:
+            async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=1)) as session:
                 async with session.get(self.url) as response:
                     response.raise_for_status()
                     with open(f"{self.path}", "wb") as file:
@@ -47,6 +55,7 @@ class PageDownload(Page):
             self.switch_state_checked("FINISHED")
             return True
         except Exception:
+            self.failed_times += 1
             self.switch_state_checked("FAILED")
             return False
 
@@ -65,7 +74,23 @@ class PageDownload(Page):
     def get_path(self) -> str:
         return self.path
 
+    def get_failed_times(self) -> int:
+        return self.failed_times
+
+    def reset_failed_times(self):
+        self.failed_times = 0
+
+    def get_max_failed_times(self) -> int:
+        return self.max_failed_times
+
+    def set_max_failed_times(self, max_failed_times: int) -> None:
+        self.max_failed_times = max_failed_times
+
+
 if __name__ == "__main__":
+    if not os.path.exists("../test/"):
+        os.mkdir("../test/")
+
     async def test():
         task_list = []
         for i in range(10):

@@ -22,6 +22,18 @@ class Downloader(Protocol):
     def get_path(self) -> str:
         ...
 
+    def get_failed_times(self) -> int:
+        ...
+
+    def reset_failed_times(self):
+        ...
+
+    def get_max_failed_times(self) -> int:
+        ...
+
+    def set_max_failed_times(self, max_failed_times: int) -> None:
+        ...
+
 
 if __name__ == "__main__":
     from pathlib import Path
@@ -40,9 +52,9 @@ if __name__ == "__main__":
     )
 
     async def main():
-        cases = ["https://www.pwithe.com/Public/Upload/download/20170211/589ebf8e5bb13.pdf",
+        cases = ["https://tieba.baidu.com/f?kw=%E6%98%8E%E6%97%A5%E6%96%B9%E8%88%9F%E5%86%85%E9%AC%BC",
                  "https://www.baidu.com",
-                 "https://blog.csdn.net/csdnnews/article/details/139859111?spm=1000.2115.3001.5928",
+                 "https://tieba.baidu.com/f?kw=%E7%BB%88%E6%9C%AB%E5%9C%B0",
                  "https://www.cnblogs.com/zhiminyu/p/14202683.html",
                  "https://cloud.tencent.com/developer/article/1676325",
                  ]

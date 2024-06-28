@@ -10,12 +10,15 @@ class DownloadQueue:
     def __init__(self, path: str, max_reqs: int):
         self.items: list[Downloader] = []
         self.inflight_list: list[Downloader] = []
+        self.failed_list: list[Downloader] = []
         self.finished: int = 0
         self.status: Status = "IDLE"
         self.path: str = path
         self.max_reqs: int = max_reqs
         self.current_req_idx: int = 0
         self.lock = asyncio.Lock()
+        self.max_failed_times: int = 3
+        self.failed_times = 0
 
     def add_items(self, items: list[Downloader]):
         # Assume that pages is in order, ensure by caller
@@ -26,9 +29,17 @@ class DownloadQueue:
             self.items.append(item)
 
     async def producer(self):
-        while self.finished < len(self.items):
+        while self.finished < len(self.items) and self.status == "DOWNLOADING":
+            if self.failed_times >= self.max_failed_times:
+                self.status = "FAILED"
+                return
             temp_list = []
             async with self.lock:
+                if self.failed_list:
+                    failed_temp = [item.download() for item in self.failed_list]
+                    temp_list.extend(failed_temp)
+                    self.failed_list.clear()
+                assert len(self.inflight_list) <= self.max_reqs
                 for i in range(self.current_req_idx, self.current_req_idx + self.max_reqs):
                     if len(self.inflight_list) < self.max_reqs and i < len(self.items):
                         page = self.items[i]
@@ -37,23 +48,30 @@ class DownloadQueue:
                         temp_list.append(page.download())
                     else:
                         break
+                not_max_failed = False
+                for item in self.inflight_list:
+                    if item.get_failed_times() < self.max_failed_times:
+                        not_max_failed = True
+                        break
+                if not not_max_failed:
+                    self.failed_times += 1
             if temp_list:
                 await asyncio.gather(*temp_list)
             await asyncio.sleep(0.1)  # Avoid busy waiting
+        if self.status == "DOWNLOADING":
+            self.status = "FINISHED"
 
     async def consumer(self):
-        while self.finished < len(self.items):
-            temp_list = []
+        while self.finished < len(self.items) and self.status == "DOWNLOADING":
             async with self.lock:
                 for page in self.inflight_list[:]:
                     if await page.get_status() == "FINISHED":
                         self.inflight_list.remove(page)
                         self.finished += 1
                     elif await page.get_status() == "FAILED":
-                        temp_list.append(page.download())
+                        if page.get_failed_times() < page.get_max_failed_times():
+                            self.failed_list.append(page)
 
-            if temp_list:
-                await asyncio.gather(*temp_list)
             await asyncio.sleep(0.1)  # Avoid busy waiting
 
     async def download(self) -> bool:
@@ -61,8 +79,10 @@ class DownloadQueue:
         if not os.path.exists(self.path):
             os.makedirs(self.path)
         await asyncio.gather(self.producer(), self.consumer())
-        self.status = "FINISHED"
-        return True
+        if self.status == "FINISHED":
+            return True
+        else:
+            return False
 
     async def get_progress(self):
         async with self.lock:
@@ -80,6 +100,20 @@ class DownloadQueue:
 
     def get_path(self) -> str:
         return self.path
+
+    def get_failed_times(self) -> int:
+        return self.failed_times
+
+    def reset_failed_times(self):
+        for i in self.items:
+            i.reset_failed_times()
+        self.failed_times = 0
+
+    def get_max_failed_times(self) -> int:
+        return self.max_failed_times
+
+    def set_max_failed_times(self, max_failed_times: int) -> None:
+        self.max_failed_times = max_failed_times
 
 
 if __name__ == "__main__":
