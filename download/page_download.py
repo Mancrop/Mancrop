@@ -6,6 +6,20 @@ from download import Status
 import aiohttp
 import asyncio
 
+"""
+   The PageDownload class inherits from the Page class and implements page download functionality.
+
+   Description:
+       This class is used to manage and execute page download operations. It includes features such as managing download 
+       status, setting the download path, and retrieving download progress.
+
+   Attributes:
+       status (Status): The current download status, initialized to "IDLE".
+       path (str): The file save path for the download.
+       failed_times (int): The current number of download failures, initialized to 0.
+       max_failed_times (int): The maximum allowed number of download failures, initialized to 20.
+"""
+
 
 class PageDownload(Page):
     def __init__(self):

@@ -5,6 +5,18 @@ from page_download import PageDownload
 from modules.page import Page
 from download import Status, Downloader
 
+"""
+The DownloadQueue class is responsible for managing the download process of a list of Downloader objects. It provides the following functionality:
+
+1. Adds items (Downloader objects) to the queue.
+2. Manages the download process using producer and consumer tasks, ensuring that the maximum number of concurrent requests is not exceeded.
+3. Handles failed downloads by retrying them up to a specified maximum number of times.
+4. Keeps track of the overall download progress and status.
+5. Allows setting the download path and maximum number of failed attempts.
+
+The class uses a lock to ensure thread-safe access to shared resources, such as the lists of items, in-flight requests, and failed requests.
+"""
+
 
 class DownloadQueue:
     def __init__(self, path: str, max_reqs: int):
