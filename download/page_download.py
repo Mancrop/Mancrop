@@ -1,6 +1,4 @@
 import os.path
-import shutil
-
 from modules.page import Page
 from download import Status
 import aiohttp
