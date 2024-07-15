@@ -1,5 +1,6 @@
 import subprocess
 import locale
+import utils
 
 
 local_decoding = locale.getpreferredencoding()
@@ -7,7 +8,8 @@ installing_shell = "\
     pip install poetry &&\
     poetry config virtualenvs.in-project true &&\
     poetry install &&\
-    poetry shell\
+    poetry shell   &&\
+    playwright install \
 "
 
 t = subprocess.Popen(installing_shell, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -19,7 +21,7 @@ while True:
     res = t.poll()
     if res is not None:
         if res == 0:
-            print(f"Successfully install requirements: exited with {res}")
+            utils.print_color(f"Successfully install requirements: exited with {res}", "green")
         else:
-            print(f"Failed(return with {res}): {t.stderr.read().decode(local_decoding)}!")
+            utils.print_color(f"Failed(return with {res}): {t.stderr.read().decode(local_decoding)}!", "red")
         break

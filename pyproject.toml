@@ -19,6 +19,7 @@ packages = [
 python = "^3.12"
 aiohttp = "3.9.5"
 rich = "13.7.1"
+crawlee = {extras = ["playwright"], version = "^0.1.0"}
 
 
 [build-system]
