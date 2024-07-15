@@ -8,8 +8,7 @@ installing_shell = "\
     pip install poetry &&\
     poetry config virtualenvs.in-project true &&\
     poetry install &&\
-    poetry shell   &&\
-    playwright install \
+    poetry run playwright install \
 "
 
 t = subprocess.Popen(installing_shell, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
