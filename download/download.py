@@ -43,6 +43,7 @@ if __name__ == "__main__":
     from download_queue import DownloadQueue
     from modules.page import Page
     from page_download import PageDownload
+    import os
 
     progress = Progress(
         SpinnerColumn(),
@@ -60,13 +61,16 @@ if __name__ == "__main__":
                  ]
         queue = []
 
+        cur_path = os.path.dirname(os.path.abspath(__file__))
+        print(cur_path)
+
         for idx, case in enumerate(cases):
-            download_queue = DownloadQueue(f"../test/test{idx}", 10)
+            download_queue = DownloadQueue(os.path.join(cur_path, f"../simple_try/test/test{idx}"), 10)
             pages_ = [PageDownload.from_page(Page(url=case), f"Page{i}", i) for i in range(50)]
             download_queue.add_items(pages_)
             queue.append(download_queue)
 
-        top_downloader = DownloadQueue(f"../test", 10)
+        top_downloader = DownloadQueue(os.path.join(cur_path, f"../simple_try/test"), 10)
         top_downloader.add_items(queue)
 
         top_task = asyncio.create_task(top_downloader.download())

@@ -100,8 +100,10 @@ class PageDownload(Page):
 
 
 if __name__ == "__main__":
-    if not os.path.exists("../test/"):
-        os.mkdir("../test/")
+    cur_path = os.path.dirname(os.path.abspath(__file__))
+    target_path = os.path.join(cur_path, "../simple_try/test/")
+    if not os.path.exists(target_path):
+        os.mkdir(target_path)
 
     async def test():
         task_list = []
