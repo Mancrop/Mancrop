@@ -1,5 +1,8 @@
 import asyncio
 import os
+import sys
+
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 from page_download import PageDownload
 from modules.page import Page

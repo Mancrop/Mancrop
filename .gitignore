@@ -5,3 +5,4 @@ test/
 .venv
 # In simple_try dir, we will try something out
 simple_try/
+storage/

@@ -5,10 +5,8 @@ import utils
 
 local_decoding = locale.getpreferredencoding()
 installing_shell = "\
-    pip install poetry &&\
-    poetry config virtualenvs.in-project true &&\
-    poetry install &&\
-    poetry run playwright install \
+    pip install --upgrade uv &&\
+    playwright install\
 "
 
 t = subprocess.Popen(installing_shell, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
