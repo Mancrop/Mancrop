@@ -6,7 +6,8 @@ import utils
 local_decoding = locale.getpreferredencoding()
 installing_shell = "\
     pip install --upgrade uv &&\
-    playwright install\
+    playwright install &&\
+    uv venv &&\
 "
 
 t = subprocess.Popen(installing_shell, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)

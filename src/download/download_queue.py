@@ -1,12 +1,7 @@
 import asyncio
 import os
-import sys
 
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-
-from page_download import PageDownload
-from modules.page import Page
-from download import Status, Downloader
+from download_def import Status, Downloader
 
 """
 The DownloadQueue class is responsible for managing the download process of a list of Downloader objects. It provides the following functionality:
@@ -129,12 +124,3 @@ class DownloadQueue:
 
     def set_max_failed_times(self, max_failed_times: int) -> None:
         self.max_failed_times = max_failed_times
-
-
-if __name__ == "__main__":
-    cur_path = os.path.dirname(os.path.abspath(__file__))
-    target_path = os.path.join(cur_path, "../simple_try/test/")
-    download_queue = DownloadQueue(os.path.join(target_path, "queue1"), 10)
-    pages_ = [PageDownload.from_page(Page(url="https://www.baidu.com"), f"Page{i}", i) for i in range(30)]
-    download_queue.add_items(pages_)
-    asyncio.run(download_queue.download())

@@ -1,44 +1,6 @@
 import asyncio
-from typing import Literal, TypeAlias
-from typing import Protocol
-
-
-Status: TypeAlias = Literal["IDLE", "DOWNLOADING", "FAILED", "FINISHED"]
-
-
-class Downloader(Protocol):
-    async def download(self) -> bool:
-        ...
-
-    async def get_progress(self) -> int:
-        ...
-
-    async def get_status(self) -> Status:
-        ...
-
-    def set_path(self, path: str) -> None:
-        ...
-
-    def get_path(self) -> str:
-        ...
-
-    def get_failed_times(self) -> int:
-        ...
-
-    def reset_failed_times(self):
-        ...
-
-    def get_max_failed_times(self) -> int:
-        ...
-
-    def set_max_failed_times(self, max_failed_times: int) -> None:
-        ...
-
 
 if __name__ == "__main__":
-    from pathlib import Path
-    import sys
-    sys.path.insert(0, str((Path(__file__) / "../..").resolve()))
     from rich.progress import Progress, SpinnerColumn, BarColumn
     from download_queue import DownloadQueue
     from modules.page import Page

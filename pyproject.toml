@@ -1,21 +1,42 @@
 [project]
 name = "mancrop"
 version = "0.1.0"
-authors = ["徐铭 <xumingxs@qq.com>"]
+authors = [{ name = "徐铭", email = "xumingxs@qq.com" }]
 license = "MIT"
 description = ""
 readme = "README.md"
 requires-python = ">=3.12"
-packages = [
-    { include = "download" },
-    { include = "error_handler" },
-    { include = "log" },
-    { include = "modules" },
-    { include = "utils" },
-]
+# packages = [
+#     { include = "download" },
+#     { include = "error_handler" },
+#     { include = "log" },
+#     { include = "modules" },
+#     { include = "utils" },
+#     { include = "simple_try" },
+# ]
 
 dependencies = [
     "aiohttp>=3.10.5",
     "crawlee[playwright]>=0.3.4",
     "rich>=13.8.0",
 ]
+
+tool.uv.package = true
+
+[project.scripts]
+mancrop = "mancrop:main"
+
+[tool.hatch.build.targets.wheel]
+packages = [
+    "src/mancrop",
+    "src/download",
+    "src/error_handler",
+    "src/log",
+    "src/modules",
+    "src/utils",
+    "src/simple_try",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
