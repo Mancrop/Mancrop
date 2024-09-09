@@ -1,8 +1,6 @@
-import os.path
 from modules.page import Page
-from download_def import Status
+from .download_def import Status
 import aiohttp
-import asyncio
 
 """
    The PageDownload class inherits from the Page class and implements page download functionality.

@@ -1,7 +1,7 @@
 import asyncio
 import os
 
-from download_def import Status, Downloader
+from .download_def import Status, Downloader
 
 """
 The DownloadQueue class is responsible for managing the download process of a list of Downloader objects. It provides the following functionality:
