@@ -20,10 +20,17 @@ class PluginsManager():
             if main_class().type() == self.plugins_type:
                 class_obj = main_class(args, kwargs)
                 self.plugins[class_obj.name()] = class_obj
-                return False
-        except Exception as _:
-            return True
+                return True
+        except Exception as e:
+            print(f'Load plugin {plugin_path} failed: {e}')
+            return False
         return False
+    
+    def print_plugins(self) -> None:
+        print("Plugins:")
+        for plugin in self.plugins:
+            print(plugin)
+        print()
     
     def remove_plugin(self, plugin_name: str) -> bool:
         if plugin_name in self.plugins:
@@ -33,5 +40,5 @@ class PluginsManager():
         
     def get_plugin(self, plugin_name: str) -> PluginsBase | None:
         if plugin_name in self.plugins:
-            return self.plugins[plugin_name]()
+            return self.plugins[plugin_name]
         return None
