@@ -1,6 +1,18 @@
 from .plugins_def import PluginsBase
 import importlib.util
 
+"""
+Plugins mangaer is a class that manages plugins
+It can load plugins from a file, and store them in a dictionary
+Methods are list below:
+- __init__: init plugins manager
+- load_plugins: load plugins from file, noting that the name of plugins class 
+should the same as the file
+- print_plugins: ...
+- ...
+
+There is a using example for this class, see test_plugins_manager.py
+"""
 
 class PluginsManager():
     def __init__(self, plugins_type: str):
