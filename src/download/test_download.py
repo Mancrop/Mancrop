@@ -32,7 +32,7 @@ if __name__ == "__main__":
             download_queue.add_items(pages_)
             queue.append(download_queue)
 
-        top_downloader = DownloadQueue(os.path.join(cur_path, f"../simple_try/test"), 10)
+        top_downloader = DownloadQueue(os.path.join(cur_path, "../simple_try/test"), 10)
         top_downloader.add_items(queue)
 
         top_task = asyncio.create_task(top_downloader.download())
